@@ -36,6 +36,23 @@ class LogTest extends CIUnitTestCase
         $result->assertJSONFragment(['message' => 'Test log']);
     }
 
+    public function testCreateLogShouldFailValidation(): void
+    {
+        $result = $this->withBodyFormat('json')->post('/api/log', [
+            "message" => ""
+        ]);
+
+        $body = json_decode($result->getJSON(), true, 512, JSON_THROW_ON_ERROR);
+
+        $result->assertNotOK();
+        $result->assertStatus(400);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertSame(
+            ['message' => 'The message field is required.'],
+            $body
+        );
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();

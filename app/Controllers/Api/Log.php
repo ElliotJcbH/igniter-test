@@ -4,9 +4,6 @@ namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
 use App\Models\LogModel;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
-use Psr\Log\LoggerInterface;
 
 class Log extends BaseController
 {
@@ -27,12 +24,19 @@ class Log extends BaseController
     }
 
     public function create() {
-        $data = $this->request->getJSON(true);
+        $data = $this->request->getJSON(true) ?? [];
 
-        if(!is_array($data) || !isset($data['message']) || !is_string($data['message'])) {
+        // if(!is_array($data) || !isset($data['message']) || !is_string($data['message'])) {         
+        // }
+
+        $rules = [
+            'message' => 'required|max_length[2000]|min_length[1]',
+        ];
+
+        if(! $this->validateData($data, $rules)) {
             return $this->response
-                ->setStatusCode(400)
-                ->setJSON(['error' => 'A message is required']);
+                ->setJSON($this->validator->getErrors())
+                ->setStatusCode(400);
         }
 
         $model = new LogModel();
