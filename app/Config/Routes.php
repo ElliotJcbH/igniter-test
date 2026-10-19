@@ -6,5 +6,6 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], function($routes) {
+    $routes->get('log/(:num)', 'Log::index/$1');
     $routes->post('log', 'Log::create');
 });

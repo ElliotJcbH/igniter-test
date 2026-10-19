@@ -53,6 +53,18 @@ class LogTest extends CIUnitTestCase
         );
     }
 
+    public function testFetchLogById(): void
+    {
+        $result = $this->get('api/log/1');
+
+        $body = json_decode($result->getJSON(), true, 512, JSON_THROW_ON_ERROR);
+
+        $result->assertOK();
+        $result->assertStatus(200);
+        $this->assertArrayHasKey('message', $body);
+        $this->assertEquals(1, $body['id']);
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();

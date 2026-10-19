@@ -7,20 +7,20 @@ use App\Models\LogModel;
 
 class Log extends BaseController
 {
-    // protected LogModel $logModel;
 
-    // public function initController(
-    //     RequestInterface $request,
-    //     ResponseInterface $response,
-    //     LoggerInterface $logger
-    // ): void {
-    //     parent::initController($request, $response, $logger);
-    //     $this->logModel = model(LogModel::class);
-    // }
-
-    public function index()
+    public function index(int $id)
     {
-        //
+        $model = new LogModel();
+        $data = $model->find($id);
+
+        if(! isset($data) || ! array_key_exists('id', $data) || ! isset($data['id'])) {
+            return $this->response
+                ->setStatusCode(404);
+        }
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setJSON(json_encode($data));
     }
 
     public function create() {
